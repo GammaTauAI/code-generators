@@ -200,8 +200,8 @@ if __name__ == "__main__":
     parser.add_argument('--max_tokens', type=int, default=1024)
     args = parser.parse_args()
     model = model_factory(args.model)
+    print("READY")
     if model.is_chat:
-        while True:
-            print(model.generate_chat(args.system, input()))
+        print(model.generate_chat(args.system, args.prompt))
     else:
         print(model.generate(args.prompt))
