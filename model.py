@@ -201,6 +201,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     model = model_factory(args.model)
     print("READY")
+    print("Model:", model)
+    print("System:", args.system)
+    print("Prompt:", args.prompt)
     if model.is_chat:
         print(model.generate_chat(args.system, args.prompt))
     else:
