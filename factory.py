@@ -18,9 +18,9 @@ def model_factory(model_name: str) -> ModelBase:
         return GPT4()
     elif model_name == "gpt-3.5-turbo":
         return GPT35()
-    elif model_name == "starchat":
+    elif model_name == "starchat" or model_name == "star-chat":
         return StarChat()
-    elif model_name == "wizardcoder":
+    elif model_name == "wizardcoder" or model_name == "wizard-coder":
         return WizardCoder()
     elif model_name.startswith("text-davinci"):
         return GPTDavinci(model_name)
