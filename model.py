@@ -177,8 +177,9 @@ class WizardCoder(ModelBase):
             do_sample=True,
             temperature=temperature,
             top_p=0.95,
-            eos_token_id=49155,
             num_return_sequences=num_comps,
+            eos_token_id=self.pipe.tokenizer.eos_token_id,
+            bos_token_id=self.pipe.tokenizer.bos_token_id,
         )
 
         outs = [output['generated_text'] for output in outputs]  # type: ignore
