@@ -146,3 +146,60 @@ class StarChat(ModelBase):
             return outs[0]  # type: ignore
         else:
             return outs  # type: ignore
+
+
+class WizardCoder(ModelBase):
+    def __init__(self):
+        import torch
+        from transformers import pipeline
+        self.name = "wizard-coder"
+        self.pipe = pipeline(
+            "text-generation", model="HuggingFaceH4/starchat-beta", torch_dtype=torch.bfloat16, device_map="auto")
+        self.template = """Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+{system}
+{query}
+
+### Response:"""
+        self.is_chat = True
+
+    def generate_chat(self, system_message: str, user_message: str, max_tokens=1024, temperature=0.2, num_comps=1) -> Union[List[str], str]:
+        # NOTE: HF does not like temp of 0.0.
+        if temperature < 0.0001:
+            temperature = 0.0001
+
+        prompt = self.template.format(
+            system=system_message, query=user_message)
+        outputs = self.pipe(
+            prompt,
+            max_new_tokens=max_tokens,
+            do_sample=True,
+            temperature=temperature,
+            top_p=0.95,
+            eos_token_id=49155,
+            num_return_sequences=num_comps,
+        )
+
+        outs = [output['generated_text'] for output in outputs]  # type: ignore
+        assert isinstance(outs, list)
+        if len(outs) == 1:
+            return outs[0]  # type: ignore
+        else:
+            return outs  # type: ignore
+
+
+if __name__ == "__main__":
+    import argparse
+    from factory import model_factory
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model', type=str, default='starchat')
+    parser.add_argument('--system', type=str, default='Hello')
+    parser.add_argument('--prompt', type=str, default='Hello, my name is')
+    parser.add_argument('--max_tokens', type=int, default=1024)
+    args = parser.parse_args()
+    model = model_factory(args.model)
+    if model.is_chat:
+        print(model.generate_chat(args.system, args.prompt))
+    else:
+        print(model.generate(args.prompt))
