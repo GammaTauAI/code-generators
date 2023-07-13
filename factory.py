@@ -1,3 +1,4 @@
+from .lua_generate import LuaGenerator
 from .py_generate import PyGenerator
 from .rs_generate import RsGenerator
 from .generator_types import Generator
@@ -9,6 +10,8 @@ def generator_factory(lang: str) -> Generator:
         return PyGenerator()
     elif lang == "rs" or lang == "rust":
         return RsGenerator()
+    elif lang == "lua":
+        return LuaGenerator()
     else:
         raise ValueError(f"Invalid language for generator: {lang}")
 
