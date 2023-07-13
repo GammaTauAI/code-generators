@@ -1,4 +1,4 @@
-from model import ModelBase
+from .model import ModelBase
 import random
 
 from typing import Union, List, Optional, Callable

@@ -1,6 +1,6 @@
-from model import ModelBase
-from generator_types import Generator
-from generator_utils import generic_generate_func_impl, generic_generate_internal_tests, generic_generate_self_reflection
+from .model import ModelBase
+from .generator_types import Generator
+from .generator_utils import generic_generate_func_impl, generic_generate_internal_tests, generic_generate_self_reflection
 
 from typing import List, Optional, Union
 

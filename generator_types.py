@@ -1,7 +1,7 @@
 from typing import List, Optional, Union
 from abc import abstractmethod
 
-from model import ModelBase
+from .model import ModelBase
 
 
 class Generator:

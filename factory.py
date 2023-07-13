@@ -1,7 +1,7 @@
-from py_generate import PyGenerator
-from rs_generate import RsGenerator
-from generator_types import Generator
-from model import ModelBase, GPT4, GPT35, StarChat, GPTDavinci, WizardCoder
+from .py_generate import PyGenerator
+from .rs_generate import RsGenerator
+from .generator_types import Generator
+from .model import ModelBase, GPT4, GPT35, StarChat, GPTDavinci, WizardCoder
 
 
 def generator_factory(lang: str) -> Generator:
