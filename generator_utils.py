@@ -3,6 +3,38 @@ import random
 
 from typing import Union, List, Optional, Callable
 
+
+def get_code_from_possible_markdown(markdown: str) -> str:
+    if not "```" in markdown:
+        return markdown
+
+    # get the code by stripping out markdown ``` and ```
+    out_lines = markdown.split("\n")
+    in_func = False
+    func_lines = []
+    for line in out_lines:
+        if "```" in line:
+            if in_func:
+                in_func = False
+                break
+            else:
+                in_func = True
+                continue
+        if in_func:
+            func_lines.append(line)
+
+    return "\n".join(func_lines)
+
+
+def remove_func_sig_if_present(func_sig: str, func_body: str) -> str:
+    if func_sig in func_body:
+        # remove the entire line
+        lines = func_body.split("\n")
+        lines = [line for line in lines if func_sig not in line]
+    else:
+        return func_body
+
+
 def generic_generate_func_impl(
     func_sig: str,
     model: ModelBase,
@@ -57,18 +89,24 @@ def generic_generate_func_impl(
             func_bodies = model.generate(
                 prompt, num_comps=num_comps, temperature=temperature)
 
+    def fix_code(code):
+        return fix_body(remove_func_sig_if_present(
+            func_sig, get_code_from_possible_markdown(code)))
+
     if num_comps == 1:
         assert isinstance(func_bodies, str)
+        code = func_sig + fix_code(func_bodies)
         print('--------------------- GENERATED FUNC BODY ---------------------')
-        print(func_sig + fix_body(func_bodies))
+        print(code)
         print('------------------------------------------')
-        return func_sig + fix_body(func_bodies)
+        return code
 
     else:
         print('--------------------- GENERATED FUNC BODY ---------------------')
-        print([func_sig + fix_body(func_body) for func_body in func_bodies])
+        codes = [func_sig + fix_code(body) for body in func_bodies]
+        print(codes)
         print('------------------------------------------')
-        return [func_sig + fix_body(func_body) for func_body in func_bodies]
+        return codes
 
 
 def generic_generate_internal_tests(

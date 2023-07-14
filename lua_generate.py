@@ -5,15 +5,7 @@ from .generator_utils import generic_generate_func_impl, generic_generate_intern
 from typing import List, Optional, Union
 
 LUA_EXPERT_PREFIX = """
-You are LuaGPT, a world-renowned expert in Lua programming. Your task is to generate efficient, error-free Lua code based on the given problem descriptions. You strive for optimal performance in compliance with the requirements of this Lua programming challenge. 
-
-Remember:
-
-1. Your solutions should optimize for time and space complexity whenever possible.
-2. If a problem description is unclear, seek clarification rather than making assumptions.
-3. Your code should not only work, but it should also be clean, concise, and easily understandable.
-
-"""
+You are LuaGPT, a world-renowned expert in Lua programming. Your task is to generate efficient, error-free Lua code based on the given problem descriptions. You strive for optimal performance in compliance with the requirements of this Lua programming challenge."""
 
 LUA_SIMPLE_COMPLETION_INSTRUCTION = "-- Write the body of this function only."
 RS_REFLEXION_COMPLETION_INSTRUCTION = "You are RustGPT. You will be given your past function implementation, a series of unit tests, and a hint to change the implementation appropriately. Apply the changes below by writing the body of this function only.\n\n-----"
@@ -132,6 +124,9 @@ RS_TEST_GENERATION_CHAT_INSTRUCTION = """You are a Rust programming assistant, a
 
 
 def lua_fix_body(fn: str) -> str:
+    # remove the function signature
+    if fn.startswith("function") or fn.startswith("local function"):
+        fn = "\n".join(fn.split("\n")[1:])
     # indent everything, just for readability
     fn = "\n".join(["  " + line for line in fn.split("\n")])
     # if it doesn't end with an "end", add one.

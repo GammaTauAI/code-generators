@@ -111,7 +111,7 @@ class StarChat(ModelBase):
         from transformers import pipeline
         self.name = "star-chat"
         self.pipe = pipeline(
-            "text-generation", model="HuggingFaceH4/starchat-beta", torch_dtype=torch.bfloat16, device_map="auto")
+            "text-generation", model="HuggingFaceH4/starchat-beta", torch_dtype=torch.bfloat16, device_map=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
         self.template = "<|system|>\n{system}<|end|>\n<|user|>\n{query}<|end|>\n<|assistant|>"
         self.is_chat = True
 
@@ -148,6 +148,7 @@ class StarChat(ModelBase):
             return outs  # type: ignore
 
 
+# NOTE: honestly, it's pretty clear this model is BS.
 class WizardCoder(ModelBase):
     def __init__(self):
         import torch
